@@ -1,0 +1,27 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+
+.montserrat-font {
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #4b5563 !important; /* Equivalent to Tailwind's text-gray-700 */
+  opacity: 1 !important; /* Ensure full opacity */
+}
+
+/* Force dark text color for native date and time inputs */
+input[type="date"],
+input[type="time"] {
+  color: #1f2937 !important; /* Equivalent to Tailwind's text-gray-900 */
+}
+
+/* Specific override for time input to ensure visibility */
+input[type="time"] {
+  color: #000000 !important; /* Explicitly black */
+}
