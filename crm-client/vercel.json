@@ -1,0 +1,4 @@
+{
+  "buildCommand": "cd crm-client && chmod +x node_modules/.bin/vite && npm install && npm run build",
+  "outputDirectory": "crm-client/dist"
+}
