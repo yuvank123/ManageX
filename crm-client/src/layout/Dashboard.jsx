@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect, useRef } from 'react'
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { Context } from '../provider/AuthProvider';
-import useAdmin from '../hook/useAdmin';
+import useAdmin from '../hooks/useAdmin';
 import useEmployee from '../hooks/useEmployee';
 import Loading from '../component/loading';
 import { FaChartLine, FaHome, FaUser, FaBookReader, FaChartBar, FaBars, FaTimes, FaBell, FaSearch, FaCog } from "react-icons/fa";
