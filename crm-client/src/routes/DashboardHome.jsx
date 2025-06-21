@@ -17,7 +17,7 @@ import {
 import useAdminCount from '../hook/useAdminCount';
 import useUser from '../hook/useUser';
 import useTask from '../hook/useTask';
-import useEmployeeCount from '../hook/useEmployeeCount';
+import useEmployeeCount from '../hook/useEmployeeCount.jsx';
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 import useLead from '../hook/useLead';
