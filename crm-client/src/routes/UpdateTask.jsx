@@ -36,7 +36,8 @@ const UpdateTask = () => {
         Swal.fire("Success", "Task updated successfully!", "success");
         navigate("/dashboard/managetask"); // redirect after update
       } else {
-        Swal.fire("Info", "No changes made.", "info");
+        Swal.fire("Success", "Task updated successfully!", "success");
+        navigate("/dashboard/managetask"); // redirect after update
       }
     } catch (error) {
       console.error(error);
@@ -53,10 +54,10 @@ const UpdateTask = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <h2 className="text-2xl font-semibold mb-6 text-center text-gray-800">Update Task</h2>
+      <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Update Task</h2>
       <form onSubmit={handleUpdate} className="space-y-4">
         <div>
-          <label className="block font-medium mb-1">Executive Email</label>
+          <label className="block font-medium mb-1 text-gray-800">Executive Email</label>
           <input
             type="email"
             name="email"
@@ -66,7 +67,7 @@ const UpdateTask = () => {
           />
         </div>
         <div>
-          <label className="block font-medium mb-1">Task Title</label>
+          <label className="block font-medium mb-1 text-gray-800">Task Title</label>
           <input
             type="text"
             name="title"
@@ -76,7 +77,7 @@ const UpdateTask = () => {
           />
         </div>
         <div>
-          <label className="block font-medium mb-1">Task Description</label>
+          <label className="block font-medium mb-1 text-gray-800">Task Description</label>
           <textarea
             name="description"
             defaultValue={task.description}
@@ -86,7 +87,7 @@ const UpdateTask = () => {
           ></textarea>
         </div>
         <div>
-          <label className="block font-medium mb-1">Deadline</label>
+          <label className="block font-medium mb-1 text-gray-800">Deadline</label>
           <input
             type="date"
             name="deadline"
