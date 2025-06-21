@@ -137,7 +137,7 @@ const ManageLeadsAdmin = () => {
           <input
             type="date"
             id="filterMinDate"
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-gray-800"
+            className="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline text-gray-800"
             value={filterMinDate}
             onChange={(e) => setFilterMinDate(e.target.value)}
           />
@@ -151,7 +151,7 @@ const ManageLeadsAdmin = () => {
           <input
             type="date"
             id="filterMaxDate"
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-gray-800"
+            className="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline text-gray-800"
             value={filterMaxDate}
             onChange={(e) => setFilterMaxDate(e.target.value)}
           />

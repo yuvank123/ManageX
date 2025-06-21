@@ -14,10 +14,10 @@ import {
   LineElement,
   Filler,
 } from 'chart.js';
-import useAdminCount from '../hooks/useAdminCount.js';
+import useAdminCount from '../hooks/useAdminCount.jsx';
 import useUser from '../hooks/useUser.jsx';
-import useTask from '../hooks/useTask.js';
-import useEmployeeCount from '../hooks/useEmployeeCount.js';
+import useTask from '../hooks/useTask.jsx';
+import useEmployeeCount from '../hooks/useEmployeeCount.jsx';
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 import useLead from '../hooks/useLead.js';
