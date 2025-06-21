@@ -20,7 +20,7 @@ import useTask from '../hooks/useTask.jsx';
 import useEmployeeCount from '../hooks/useEmployeeCount.jsx';
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
-import useLead from '../hooks/useLead.js';
+import useLead from '../hooks/useLead.jsx';
 import { FaUsers, FaShieldAlt, FaBriefcase, FaTasks, FaChartLine, FaArrowUp, FaCalendarAlt, FaClock } from 'react-icons/fa';
 import API_BASE_URL from '../config/api';
 
