@@ -731,19 +731,37 @@ app.delete("/api/leads/:id", async (req, res) => {
 
 app.patch("/api/tasks/:id", async (req, res) => {
   try {
+    // Ensure DB connection
     if (!taskCollection) await connectDB();
+
     const { id } = req.params;
     const { status } = req.body;
+
+    // Validate inputs
+    if (!id || !status) {
+      return res.status(400).send({ error: "Missing required fields" });
+    }
+
     const filter = { _id: new ObjectId(id) };
     const updateDoc = {
       $set: { status },
       $currentDate: { updatedAt: true },
     };
+
     const result = await taskCollection.updateOne(filter, updateDoc);
+
     if (result.modifiedCount === 0) {
-      return res.status(404).send({ message: "Task not found or already has this status" });
+      return res.status(404).send({
+        message: "Task not found or already has this status",
+        modifiedCount: 0,
+      });
     }
-    res.send({ message: "Task status updated successfully", result });
+
+    // ✅ Return modifiedCount directly for frontend to handle it
+    res.send({
+      message: "Task status updated successfully",
+      modifiedCount: result.modifiedCount,
+    });
   } catch (error) {
     console.error("Error updating task status:", error);
     res.status(500).send({ error: "Something went wrong" });
