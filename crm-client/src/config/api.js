@@ -1,5 +1,5 @@
 // API Configuration
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://manage-oo1fahvec-yuvank-s-projects.vercel.app/';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://manage-x-kohl.vercel.app/';
 
 // Ensure the URL doesn't end with a slash to prevent double slashes
 const cleanBaseURL = API_BASE_URL.endsWith('/') ? API_BASE_URL.slice(0, -1) : API_BASE_URL;
