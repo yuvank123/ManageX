@@ -4,6 +4,7 @@ import axios from "axios";
 import { motion } from "framer-motion";
 import { Context } from "../provider/AuthProvider";
 import Loading from "../component/loading.jsx";
+import { API_BASE_URL } from '../config/api.js';
 
 const ManageLeadsAdmin = () => {
   const { user } = useContext(Context);
@@ -13,7 +14,7 @@ const ManageLeadsAdmin = () => {
   const [filterMinDate, setFilterMinDate] = useState('');
   const [filterMaxDate, setFilterMaxDate] = useState('');
 
-  const fetchAllLeads = async () => {
+  const fetchLeads = async () => {
     try {
       const config = {
         withCredentials: true,
@@ -25,7 +26,7 @@ const ManageLeadsAdmin = () => {
           maxExpectedClosureDate: filterMaxDate || undefined,
         },
       };
-      const response = await axios.get('http://localhost:3000/admin/leads', config);
+      const response = await axios.get(`${API_BASE_URL}/admin/leads`, config);
       return response.data;
     } catch (error) {
       console.error("Error fetching leads:", error);
@@ -35,7 +36,7 @@ const ManageLeadsAdmin = () => {
 
   const { data: leads = [], isLoading, error, refetch } = useQuery({
     queryKey: ['allLeads', user?.email, filterEmail, filterProduct, filterStatus, filterMinDate, filterMaxDate], // Include all filters in the query key
-    queryFn: fetchAllLeads,
+    queryFn: fetchLeads,
     enabled: !!user?.email,
   });
 
@@ -43,6 +44,14 @@ const ManageLeadsAdmin = () => {
   // const filteredLeads = leads.filter(lead => 
   //   lead.myEmail.toLowerCase().includes(filterEmail.toLowerCase())
   // );
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    const mainContent = document.querySelector('main.flex-1');
+    if (mainContent) {
+      mainContent.scrollTop = 0;
+    }
+  }, []);
 
   if (isLoading) {
     return <Loading />;
@@ -54,12 +63,12 @@ const ManageLeadsAdmin = () => {
 
   return (
     <motion.div
-      className="max-w-7xl mx-auto mt-10 p-6 bg-white rounded-xl shadow-lg border border-gray-200"
+      className="max-w-7xl mx-auto mt-0 p-6 bg-white shadow-lg border border-gray-200"
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
     >
-      <h2 className="text-2xl font-semibold mb-6 text-center text-gray-800">
+      <h2 className="text-2xl font-semibold mb-6 mt-3 text-center text-gray-800">
         All Leads (Admin View)
       </h2>
 
@@ -169,7 +178,7 @@ const ManageLeadsAdmin = () => {
               leads.map((lead, index) => (
                 <tr key={lead._id} className="hover:bg-gray-50 transition">
                   <td className="py-3 px-4 border text-gray-800">{index + 1}</td>
-                  <td className="py-3 px-4 border text-gray-800">{lead.name}</td>
+                  <td className="py-3 px-4 border text-gray-800">{lead.customerName || lead.name}</td>
                   <td className="py-3 px-4 border text-gray-800">{lead.phone}</td>
                   <td className="py-3 px-4 border text-gray-800">{lead.email}</td>
                   <td className="py-3 px-4 border text-gray-800">{lead.product}</td>

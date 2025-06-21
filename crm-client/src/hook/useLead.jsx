@@ -1,21 +1,19 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import React from 'react'
+import React from 'react';
+import API_BASE_URL from '../config/api';
 
 const useLead = () => {
+  const fetchLeads = async () => {
+    const response = await axios.get(`${API_BASE_URL}/manageLead`);
+    return response.data;
+  };
 
+  const { data: lead = [], isLoading: leadLoading } = useQuery({
+    queryKey: ["lead"],
+    queryFn: fetchLeads,
+  });
+  return [lead, leadLoading];
+};
 
-    const fetchUsers = async () => {
-        const response = await axios.get(`http://localhost:3000/manageLead`);
-        return response.data;
-      };
-
-      
-    const { data: lead = [], isLoading:leadLoading } = useQuery({
-        queryKey: ["lead"], // The unique key for this query
-        queryFn: fetchUsers, // Function to fetch the data
-      });
-  return [lead,leadLoading]
-}
-
-export default useLead
+export default useLead;

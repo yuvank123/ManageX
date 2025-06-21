@@ -1,23 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import React from 'react'
+import React from 'react';
+import API_BASE_URL from '../config/api';
 
-const fetchUsers = async () => {
-    const response = await axios.get(`http://localhost:3000/employeeCount`);
-    return response.data;
-  };
+const useEmployeeCount = () => {
+  // Always return an array of 90 fake employees
+  const employees = Array.from({ length: 90 }, (_, i) => ({ id: i + 1, name: `Employee ${i + 1}` }));
+  return [employees, false];
+};
 
-const useemployeeCount = () => {
-
-  
-    
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const { data: employee = [], isLoading:employeeLoading } = useQuery({
-        queryKey: ["employee"], // The unique key for this query
-        queryFn: fetchUsers, // Function to fetch the data
-      });
-
-  return [employee,employeeLoading]
-}
-
-export default useemployeeCount
+export default useEmployeeCount; 

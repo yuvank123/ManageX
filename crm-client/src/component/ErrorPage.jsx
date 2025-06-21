@@ -41,11 +41,11 @@ const ErrorPage = () => {
           transition={{ delay: 1.2 }}
         >
           <Link
-            to="/"
+            to="/login"
             className="inline-flex items-center gap-2 mt-6 px-6 py-3 bg-white text-purple-600 font-semibold rounded-full shadow-lg hover:bg-purple-100 transition duration-300"
           >
             <FaArrowLeft />
-            Back to Home
+            Back to Login
           </Link>
         </motion.div>
       </motion.div>

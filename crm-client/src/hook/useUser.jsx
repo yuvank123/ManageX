@@ -1,11 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import React from 'react'
+import React from 'react';
+import API_BASE_URL from '../config/api';
 
 const useUser = () => {
 
     const fetchUsers = async () => {
-        const response = await axios.get(`http://localhost:3000/userCount`);
+        const response = await axios.get(`${API_BASE_URL}/userCount`);
         return response.data;
       };
 

@@ -8,6 +8,7 @@ const PrivateRoute = ({children}) => {
 
       let {user,loading}= useContext(Context)
       const location = useLocation()
+      console.log('PrivateRoute:', {user, loading, location});
 
       if(loading){
         return <div className="fixed inset-0 flex items-center justify-center bg-gray-100 z-50">
@@ -20,8 +21,8 @@ const PrivateRoute = ({children}) => {
         return children
       }
 
-
-    return   <Navigate  state={{from:location.pathname}} to="/login"></Navigate>
+      // Only redirect if not loading and user is null
+      return   <Navigate  state={{from:location.pathname}} to="/login"></Navigate>
 };
 
 export default PrivateRoute;

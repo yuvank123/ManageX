@@ -4,13 +4,14 @@ import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import Swal from 'sweetalert2';
+import { API_BASE_URL } from '../config/api.js';
 
 const MyAddedTicket = () => {
 
       let {user}= useContext(Context)
     
         const fetchUsers = async () => {
-            const response = await axios.get(`http://localhost:3000/myaddedticket/${user?.email}`);
+            const response = await axios.get(`${API_BASE_URL}/myaddedticket/${user?.email}`);
             return response.data;
           };
     
@@ -34,7 +35,7 @@ const MyAddedTicket = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axios.delete(`http://localhost:3000/api/tickets/${id}`);
+          await axios.delete(`${API_BASE_URL}/api/tickets/${id}`);
           refetch();
           Swal.fire('Deleted!', 'Ticket has been deleted.', 'success');
         } catch (err) {
@@ -73,10 +74,10 @@ const MyAddedTicket = () => {
             {myaddedticket.map((ticket, index) => (
               <tr key={ticket._id} className="hover:bg-gray-50 transition">
                 <td className="py-3 px-4 border text-gray-800">{index + 1}</td>
-                <td className="py-3 px-4 border text-gray-800">{ticket.customerEmail}</td>
-                <td className="py-3 px-4 border text-gray-800">{ticket.category}</td>
+                <td className="py-3 px-4 border text-gray-800">{ticket.executiveEmail}</td>
+                <td className="py-3 px-4 border text-gray-800">{ticket.title}</td>
                 <td className="py-3 px-4 border text-gray-800">{ticket.priority}</td>
-                <td className="py-3 px-4 border text-gray-800">{ticket.message}</td>
+                <td className="py-3 px-4 border text-gray-800">{ticket.description}</td>
                 <td className="py-3 px-4 border font-semibold text-gray-800">
                   {ticket.status}
                 </td>

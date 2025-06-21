@@ -1,145 +1,120 @@
-import { createUserWithEmailAndPassword, GoogleAuthProvider, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from 'firebase/auth';
+import {
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signInWithRedirect,
+  signOut,
+  updateProfile,
+  getRedirectResult,
+  setPersistence,
+  browserLocalPersistence,
+  signInWithPopup,
+} from 'firebase/auth';
 import React, { createContext, useEffect, useState } from 'react';
 import auth from '../component/firebase.init';
-import axios from 'axios';
+import { apiClient } from '../config/api';
 
+export const Context = createContext(null);
 
-
-
-export let Context= createContext()
-
-const AuthProvider = ({children}) => {
-
-    let [user,setUser]=useState(null)
-    const [loading,setLoading] = useState(true);
-
-    let [darkmode,setdarkmode]=useState(true)
-
+const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [darkmode, setdarkmode] = useState(true);
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
 
-    const provider = new GoogleAuthProvider();
-    let googleSign=()=>{
- 
-        return signInWithPopup(auth, provider)
-    }
-    
-       
-    
-    
-        let createRegistered=(email,password)=>{
-         
-              return createUserWithEmailAndPassword(auth,email,password)
-        }
-    
-        let loginSetup =(email,password)=>{
-          
-             return signInWithEmailAndPassword(auth,email,password)
-        }
-    
-        let signOuts=()=>{
-          
-            return signOut(auth)
-        }
-        let updateUserProfile = (user, profileUpdates) => {
-            return updateProfile(user, profileUpdates);
-          };
-    
-          useEffect(()=>{
-            let unsubscribe= onAuthStateChanged(auth, (currentUser) => {
-                
-                //   console.log(currentUser)
-                  setUser(currentUser)
-                  // setLoading(false)
+  const provider = new GoogleAuthProvider();
+  
 
-                  if(currentUser){
-                    let user={email:currentUser?.email}
-        
-                    axios.post("http://localhost:3000/jwt",user,{withCredentials:true})
-                    .then(res=>{
-                      // console.log(res.data)
-                      setLoading(false)
-                    })
-                    .catch(error => {
-                      console.error("JWT Error:", error);
-                      setLoading(false); // Set loading to false even if JWT fails
-                    })
-                   }
-        
-                   else{
-                    axios.post("http://localhost:3000/logout",{},{withCredentials:true})
-                    .then(res=>{
-                      setLoading(false)
-                    })
-                    .catch(error => {
-                      console.error("Logout Error:", error);
-                      setLoading(false); // Set loading to false even if logout fails
-                    })
-                   }
-                
-                return ()=>{
-                    unsubscribe()
-                }
-                
-              });
-          },[])
+  // Auth functions
+  const googleSign = () => signInWithPopup(auth, provider);
+  const createRegistered = (email, password) => createUserWithEmailAndPassword(auth, email, password);
+  const loginSetup = (email, password) => signInWithEmailAndPassword(auth, email, password);
+  const signOuts = () => signOut(auth);
+  const updateUserProfile = (user, updates) => updateProfile(user, updates);
 
-          
-
-  // Toggle Theme Function
+  // Theme toggle
   const toggleTheme = () => {
     const newTheme = theme === "light" ? "dark" : "light";
     setTheme(newTheme);
     localStorage.setItem("theme", newTheme);
   };
 
-  // Apply Theme to <html> class
   useEffect(() => {
-    if (theme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
+    document.documentElement.classList.toggle("dark", theme === "dark");
   }, [theme]);
 
-  // Add timeout to prevent infinite loading
+  // Load Firebase auth state + Google redirect result
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      setLoading(false);
-    }, 5000); // 5 second timeout
+    const initAuth = async () => {
+      try {
+        await setPersistence(auth, browserLocalPersistence);
+      } catch (error) {
+        console.error('Auth Init Error:', error);
+      }
 
-    return () => clearTimeout(timeout);
+      // Always attach onAuthStateChanged
+      const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+        console.log('onAuthStateChanged:', currentUser);
+        setUser(currentUser);
+        setLoading(false);
+
+        // If user is logged in, ensure profile exists in backend
+        if (currentUser) {
+          const { displayName, email, photoURL } = currentUser;
+          try {
+            // Check if user exists in backend
+            await apiClient.post('/users', {
+              name: displayName || email,
+              email,
+              user_photo: photoURL,
+              role: 'executives',
+            });
+          } catch (err) {
+            // If user already exists, backend should handle it gracefully
+            console.warn('User might already exist');
+          }
+        }
+      });
+
+      return () => unsubscribe();
+    };
+
+    initAuth();
   }, []);
 
-  let handleMode=()=>{
-    setdarkmode(!darkmode)
-  }
+  // Set JWT only once when user is set
+  useEffect(() => {
+    if (user) {
+      apiClient.post('/jwt', user)
+        .then(() => console.log('JWT token set successfully'))
+        .catch(err => console.log('JWT Error:', err));
+    }
+  }, [user]);
 
-  
+  // Dark mode handler
+  const handleMode = () => setdarkmode(!darkmode);
 
-    
-        let val= {
-             createRegistered,
-             loginSetup,
-             signOuts,
-             googleSign,
-             updateUserProfile,
-             user,
-             loading,
-             theme,
-             toggleTheme,
-             handleMode,
-             darkmode
-    
-        }
-    
+  // Final context
+  const authInfo = {
+    createRegistered,
+    loginSetup,
+    signOuts,
+    googleSign,
+    updateUserProfile,
+    user,
+    loading,
+    theme,
+    toggleTheme,
+    handleMode,
+    darkmode
+  };
 
-    return (
-        <div>
-             <Context.Provider value={val}>
-                   {children}
-            </Context.Provider>
-        </div>
-    );
+  return (
+    <Context.Provider value={authInfo}>
+      {children}
+    </Context.Provider>
+  );
 };
 
 export default AuthProvider;

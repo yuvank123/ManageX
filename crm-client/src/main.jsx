@@ -6,8 +6,8 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-import Home from './pages/Home.jsx';
 import Login from './pages/Login.jsx';
+import Footer from './component/Footer.jsx';
 import Registered from './pages/Registered.jsx';
 import MainLayout from './layout/MainLayout.jsx';
 import AuthProvider from './provider/AuthProvider.jsx';
@@ -27,11 +27,8 @@ import AdminRoutes from './routes/AdminRoutes.jsx';
 import EmployeeRoute from './routes/EmployeeRoute.jsx';
 
 import ManageTask from './routes/ManageTask.jsx';
-import ContactUs from './component/ContactUs.jsx';
-import AboutUs from './component/AboutUs.jsx';
 import DashboardHome from './routes/DashboardHome.jsx';
 
-import EmployeesReviews from './component/EmployeesReviews.jsx';
 import ErrorPage from './component/ErrorPage.jsx';
 import Loading from './component/loading.jsx';
 
@@ -55,37 +52,78 @@ import AdminAnalytics from './routes/AdminAnalytics.jsx';
 import EnhancedTicketManagement from './routes/EnhancedTicketManagement.jsx';
 import ExecutiveAnalytics from './routes/ExecutiveAnalytics.jsx';
 import DashboardDefault from './routes/DashboardDefault.jsx';
+import CreateFirstAdmin from './routes/CreateFirstAdmin.jsx';
+import AdminTest from './routes/AdminTest.jsx';
+import FirebaseTest from './component/FirebaseTest.jsx';
 
+// Simple test component
+const TestComponent = () => {
+  return (
+    <div style={{ 
+      padding: '50px', 
+      textAlign: 'center', 
+      fontSize: '24px',
+      backgroundColor: '#f0f0f0',
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
+    }}>
+      <div>
+        <h1>CRM Application is Working!</h1>
+        <p>If you can see this, the React app is loading correctly.</p>
+        <p>Current time: {new Date().toLocaleString()}</p>
+      </div>
+    </div>
+  );
+};
 
 const router = createBrowserRouter([
   {
     path: "/",
     errorElement:<ErrorPage></ErrorPage>,
+    element: <Login></Login>,
+  },
+  {
+    path:"/login",
+    errorElement:<ErrorPage></ErrorPage>,
+    element: <Login></Login>,
+  },
+  {
+    path:"/test",
+    errorElement:<ErrorPage></ErrorPage>,
+    element: <TestComponent />,
+  },
+  {
+    path:"/register",
+    errorElement:<ErrorPage></ErrorPage>,
     element: <MainLayout></MainLayout>,
     children:[
       {
-        path:"/",
-        element:<Home></Home>
-      },
-      {
-        path:"/contactus",
-        element:<ContactUs></ContactUs>
-      },
-      {
-        path:"/aboutus",
-        element:<AboutUs></AboutUs>
-      },
-      {
-        path:"/reviews",
-        element:<EmployeesReviews></EmployeesReviews>
-      },
-      {
-        path:"/login",
-        element:<Login></Login>
-      },
-      {
         path:"/register",
         element:<Registered></Registered>
+      }
+    ]
+  },
+  {
+    path:"/create-first-admin",
+    errorElement:<ErrorPage></ErrorPage>,
+    element: <MainLayout></MainLayout>,
+    children:[
+      {
+        path:"/create-first-admin",
+        element:<CreateFirstAdmin></CreateFirstAdmin>
+      }
+    ]
+  },
+  {
+    path:"/firebase-test",
+    errorElement:<ErrorPage></ErrorPage>,
+    element: <MainLayout></MainLayout>,
+    children:[
+      {
+        path:"/firebase-test",
+        element:<FirebaseTest />
       }
     ]
   },
@@ -209,47 +247,23 @@ const router = createBrowserRouter([
         path:"/dashboard/enhanced-ticket-management",
         element:<AdminRoutes><EnhancedTicketManagement /></AdminRoutes>
       },
-    
-     
-     
-    
-      
-     
-  
-      
+      {
+        path:"/dashboard/admin-test",
+        element:<AdminTest />
+      },
     ]
   }
 ]);
 
 const queryClient = new QueryClient();
 
-
 const RootApp=()=>{
-
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-
-
-
-
-
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <ToastContainer />
-        {loading ? (
-         <Loading></Loading>
-        ) : (
-          <RouterProvider router={router} />
-        )}
+        <RouterProvider router={router} />
+        <Footer/>
       </AuthProvider>
     </QueryClientProvider>
   );
@@ -293,8 +307,6 @@ const ErrorBoundary = ({ children }) => {
 
   return children;
 };
-
-
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

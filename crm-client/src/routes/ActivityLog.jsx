@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import Loading from '../component/loading.jsx';
 import { Context } from '../provider/AuthProvider';
+import { API_BASE_URL } from '../config/api.js';
 
 const ActivityLog = () => {
   const { user } = useContext(Context);
@@ -14,7 +15,7 @@ const ActivityLog = () => {
       const config = {
         withCredentials: true,
       };
-      const response = await axios.get('http://localhost:3000/admin/activity-logs', config);
+      const response = await axios.get(`${API_BASE_URL}/admin/activity-logs`, config);
       return response.data;
     } catch (error) {
       console.error("Error fetching activity logs:", error);
@@ -38,37 +39,37 @@ const ActivityLog = () => {
 
   return (
     <motion.div
-      className="max-w-6xl mx-auto mt-10 p-4 bg-white rounded-xl shadow-lg dark:bg-gray-800 dark:border-gray-700"
+      className="max-w-6xl mx-auto mt-0 p-4 bg-white"
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
     >
-      <h2 className="text-2xl font-bold text-center text-indigo-400 dark:text-indigo-300 mb-6">
+      <h2 className="text-2xl font-bold text-center text-indigo-400 mb-6">
         Activity Logs
       </h2>
 
       <div className="overflow-x-auto">
-        <table className="min-w-full text-sm text-left border border-gray-200 dark:border-gray-600">
-          <thead className="bg-gray-100 text-gray-700 font-semibold dark:bg-gray-700 dark:text-gray-200">
+        <table className="min-w-full text-sm text-left">
+          <thead className="bg-gray-300 text-gray-700 font-bold">
             <tr>
-              <th className="py-3 px-4 border dark:border-gray-600">Timestamp</th>
-              <th className="py-3 px-4 border dark:border-gray-600">User Email</th>
-              <th className="py-3 px-4 border dark:border-gray-600">Action</th>
-              <th className="py-3 px-4 border dark:border-gray-600">Details</th>
+              <th className="py-3 px-4 border border-gray-800">Timestamp</th>
+              <th className="py-3 px-4 border border-gray-800">User Email</th>
+              <th className="py-3 px-4 border border-gray-800">Action</th>
+              <th className="py-3 px-4 border border-gray-800">Details</th>
             </tr>
           </thead>
           <tbody>
             {activityLogs.length > 0 ? (
               activityLogs.map((log, index) => (
-                <tr key={log._id || index} className="hover:bg-gray-50 transition dark:hover:bg-gray-700">
-                  <td className="py-3 px-4 border text-gray-800 dark:text-gray-200">{new Date(log.timestamp).toLocaleString()}</td>
-                  <td className="py-3 px-4 border text-gray-800 dark:text-gray-200">{log.userEmail}</td>
-                  <td className="py-3 px-4 border text-gray-800 dark:text-gray-200">{log.action}</td>
-                  <td className="py-3 px-4 border text-gray-800 dark:text-gray-200">{JSON.stringify(log.details)}</td>
+                <tr key={log._id || index} className="hover:bg-gray-200 transition">
+                  <td className="py-3 px-4 border text-gray-800">{new Date(log.timestamp).toLocaleString()}</td>
+                  <td className="py-3 px-4 border text-gray-800">{log.userEmail}</td>
+                  <td className="py-3 px-4 border text-gray-800">{log.action}</td>
+                  <td className="py-3 px-4 border text-gray-800">{JSON.stringify(log.details)}</td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="4" className="text-center py-4 text-gray-500 dark:text-gray-400">
+                <td colSpan="4" className="text-center py-4 text-gray-500">
                   No activity logs found.
                 </td>
               </tr>

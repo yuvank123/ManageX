@@ -1,9 +1,10 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { motion } from "framer-motion";
 import { Context } from "../provider/AuthProvider";
+import { API_BASE_URL } from '../config/api.js';
 
 const AddUserAdmin = () => {
   const { user } = useContext(Context); // Get user from auth context, assuming it contains token if needed for axios headers
@@ -24,15 +25,10 @@ const AddUserAdmin = () => {
     e.preventDefault();
 
     try {
-      // You might need to send the JWT token in headers if your API requires it
-      const config = {
-        headers: {
-          Authorization: `Bearer ${user?.token}`, // Adjust based on your auth hook output
-          'Content-Type': 'application/json',
-        },
-      };
-
-      const res = await axios.post('http://localhost:3000/admin/add-user', formData, config);
+      // Use withCredentials to send cookies instead of Authorization header
+      const res = await axios.post(`${API_BASE_URL}/admin/add-user`, formData, {
+        withCredentials: true
+      });
 
       if (res.status === 201) {
         Swal.fire({
@@ -53,6 +49,15 @@ const AddUserAdmin = () => {
       });
     }
   };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    // Also scroll the main dashboard content area if present
+    const mainContent = document.querySelector('main.flex-1');
+    if (mainContent) {
+      mainContent.scrollTop = 0;
+    }
+  }, []);
 
   return (
     <motion.div

@@ -1,24 +1,53 @@
-import { useQuery } from '@tanstack/react-query';
+import React, { useState, useEffect } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import React from 'react';
 import { motion } from 'framer-motion';
 import Swal from 'sweetalert2';
+import { API_BASE_URL } from '../config/api.js';
 
 const ManageTicket = () => {
-  const fetchUsers = async () => {
-    const response = await axios.get(`http://localhost:3000/alltickets`);
-    return response.data;
+  const fetchTickets = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/alltickets`);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching tickets:", error);
+      throw new Error(error.response?.data?.message || "Failed to fetch tickets");
+    }
   };
 
   const { data: allticket = [], isLoading: allticketLoading, refetch } = useQuery({
     queryKey: ["allticket"],
-    queryFn: fetchUsers,
+    queryFn: fetchTickets,
+  });
+
+  const queryClient = useQueryClient();
+
+  const updateTicketMutation = useMutation({
+    mutationFn: async ({ id, updatedData }) => {
+      await axios.patch(`${API_BASE_URL}/api/tickets/${id}`, updatedData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['tickets']);
+    },
+  });
+
+  const deleteTicketMutation = useMutation({
+    mutationFn: async (id) => {
+      await axios.delete(`${API_BASE_URL}/api/tickets/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['tickets']);
+    },
   });
 
   const handleStatusChange = async (id, newStatus) => {
     try {
-      await axios.patch(`http://localhost:3000/api/tickets/${id}`, {
-        status: newStatus,
+      await updateTicketMutation.mutateAsync({
+        id,
+        updatedData: {
+          status: newStatus,
+        },
       });
       refetch();
       Swal.fire("Updated", "Ticket status updated!", "success");
@@ -39,7 +68,7 @@ const ManageTicket = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axios.delete(`http://localhost:3000/api/tickets/${id}`);
+          await deleteTicketMutation.mutateAsync(id);
           refetch();
           Swal.fire('Deleted!', 'Ticket has been deleted.', 'success');
         } catch (err) {

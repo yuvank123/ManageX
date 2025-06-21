@@ -3,6 +3,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { motion } from "framer-motion";
 import { Context } from "../provider/AuthProvider";
+import { API_BASE_URL } from '../config/api.js';
 
 const AddFollowUp = () => {
 
@@ -33,7 +34,7 @@ const AddFollowUp = () => {
     }
 
     try {
-      const res = await axios.post("http://localhost:3000/api/followups", formData);
+      const res = await axios.post(`${API_BASE_URL}/api/followups`, formData);
       if (res.data.insertedId) {
         Swal.fire("Success", "Follow-up added successfully!", "success");
         setFormData({

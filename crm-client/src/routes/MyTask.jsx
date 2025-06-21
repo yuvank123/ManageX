@@ -4,13 +4,14 @@ import { Context } from "../provider/AuthProvider";
 import Swal from "sweetalert2";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
+import { API_BASE_URL } from '../config/api.js';
 
 const MyTask = () => {
   let { user } = useContext(Context);
 
   const fetchUsers = async () => {
     const response = await axios.get(
-      `http://localhost:3000/mytask/${user?.email}`
+      `${API_BASE_URL}/myTask/${user?.email}`
     );
     return response.data;
   };
@@ -34,7 +35,7 @@ const MyTask = () => {
 
     try {
       const res = await axios.patch(
-        `http://localhost:3000/api/tasks/${taskId}`,
+        `${API_BASE_URL}/api/tasks/${taskId}`,
         {
           status: newStatus,
         }

@@ -3,6 +3,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { motion } from "framer-motion";
 import { Context } from "../provider/AuthProvider";
+import { API_BASE_URL } from '../config/api.js';
 
 const AddaLead = () => {
 
@@ -29,9 +30,12 @@ const AddaLead = () => {
     e.preventDefault();
 
     try {
-      const res = await axios.post("http://localhost:3000/api/leads", formData);
+      const response = await axios.post(
+        `${API_BASE_URL}/api/leads`,
+        formData
+      );
 
-      if (res.data.insertedId) {
+      if (response.data.insertedId) {
         Swal.fire("Success!", "Lead added successfully!", "success");
         setFormData({
           name: "",

@@ -4,13 +4,14 @@ import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 import Swal from 'sweetalert2';
 import { motion } from "framer-motion";
+import { API_BASE_URL } from '../config/api.js';
 
 const MyAddedLead = () => {
 
     let {user}= useContext(Context)
 
     const fetchUsers = async () => {
-        const response = await axios.get(`http://localhost:3000/myleads/${user?.email}`);
+        const response = await axios.get(`${API_BASE_URL}/myLead/${user?.email}`);
         return response.data;
       };
 
@@ -24,7 +25,7 @@ const MyAddedLead = () => {
 
        const handleStatusChange = async (id, newStatus) => {
     try {
-      await axios.patch(`http://localhost:3000/api/leads/${id}`, {
+      await axios.patch(`${API_BASE_URL}/api/leads/${id}`, {
         
         status: newStatus,
       });
@@ -48,7 +49,7 @@ const MyAddedLead = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axios.delete(`http://localhost:3000/api/leads/${id}`);
+          await axios.delete(`${API_BASE_URL}/api/leads/${id}`);
           refetch()
           Swal.fire("Deleted!", "Lead has been deleted.", "success");
           
@@ -90,9 +91,9 @@ const MyAddedLead = () => {
             {mylead.map((lead, index) => (
               <tr key={lead._id} className="hover:bg-gray-50 transition">
                 <td className="py-3 px-4 border text-gray-800">{index + 1}</td>
-                <td className="py-3 px-4 border text-gray-800">{lead.name}</td>
+                <td className="py-3 px-4 border text-gray-800">{lead.customerName || lead.name}</td>
                 <td className="py-3 px-4 border text-gray-800">{lead.phone}</td>
-                <td className="py-3 px-4 border text-gray-800">{lead.email}</td>
+                <td className="py-3 px-4 border text-gray-800">{lead.leadEmail || lead.email}</td>
                 <td className="py-3 px-4 border text-gray-800">{lead.product}</td>
                 <td className="py-3 px-4 border text-gray-800">
                   <select

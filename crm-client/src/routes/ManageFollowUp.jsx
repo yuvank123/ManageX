@@ -1,14 +1,20 @@
-import { useQuery } from '@tanstack/react-query';
+import React, { useState, useEffect } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import React from 'react'
 import { motion } from 'framer-motion';
 import Swal from 'sweetalert2';
+import { API_BASE_URL } from '../config/api.js';
 
 const ManageFollowUp = () => {
 
-     const fetchUsers = async () => {
-        const response = await axios.get(`http://localhost:3000/manageFollowup`);
-        return response.data;
+     const fetchFollowUps = async () => {
+        try {
+          const response = await axios.get(`${API_BASE_URL}/manageFollowup`);
+          return response.data;
+        } catch (error) {
+          console.error("Error fetching follow-ups:", error);
+          throw new Error(error.response?.data?.message || "Failed to fetch follow-ups");
+        }
       };
 
       
@@ -16,12 +22,12 @@ const ManageFollowUp = () => {
    
     const { data: allfollowup = [], isLoading:allfollowupLoading,refetch } = useQuery({
         queryKey: ["allfollowup"], // The unique key for this query
-        queryFn: fetchUsers, // Function to fetch the data
+        queryFn: fetchFollowUps, // Function to fetch the data
       });
 
       const handleStatusChange = async (id, newStatus) => {
     try {
-      await axios.patch(`http://localhost:3000/api/followups/${id}`, {
+      await axios.patch(`${API_BASE_URL}/api/followups/${id}`, {
         status: newStatus,
       });
       refetch();
@@ -43,7 +49,7 @@ const ManageFollowUp = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axios.delete(`http://localhost:3000/api/followups/${id}`);
+          await axios.delete(`${API_BASE_URL}/api/followups/${id}`);
           refetch();
           Swal.fire('Deleted!', 'Follow-up has been deleted.', 'success');
         } catch (err) {
@@ -52,6 +58,26 @@ const ManageFollowUp = () => {
       }
     });
   };
+
+  const queryClient = useQueryClient();
+
+  const updateFollowUpMutation = useMutation({
+    mutationFn: async ({ id, updatedData }) => {
+      await axios.patch(`${API_BASE_URL}/api/followups/${id}`, updatedData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['followups']);
+    },
+  });
+
+  const deleteFollowUpMutation = useMutation({
+    mutationFn: async (id) => {
+      await axios.delete(`${API_BASE_URL}/api/followups/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['followups']);
+    },
+  });
 
   return (
     <div>
@@ -82,7 +108,7 @@ const ManageFollowUp = () => {
             {allfollowup.map((item, index) => (
               <tr key={item._id} className="hover:bg-gray-50 transition">
                 <td className="py-3 px-4 border text-gray-800">{index + 1}</td>
-                <td className="py-3 px-4 border text-gray-800">{item.email}</td>
+                <td className="py-3 px-4 border text-gray-800">{item.leadEmail || item.email}</td>
                 <td className="py-3 px-4 border text-gray-800">{item.followUpDate}</td>
                 <td className="py-3 px-4 border text-gray-800">{item.time}</td>
                 <td className="py-3 px-4 border text-gray-800">{item.remarks}</td>

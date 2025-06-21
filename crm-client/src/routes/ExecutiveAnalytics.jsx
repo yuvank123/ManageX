@@ -1,9 +1,10 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import { Context } from '../provider/AuthProvider';
 import Loading from '../component/loading.jsx';
+import API_BASE_URL from '../config/api';
 import {
   FaChartLine,
   FaUsers,
@@ -25,7 +26,7 @@ const ExecutiveAnalytics = () => {
         withCredentials: true,
       };
       // Now calling the executive-specific endpoint
-      const response = await axios.get('http://localhost:3000/executive/performance-metrics', config);
+      const response = await axios.get(`${API_BASE_URL}/executive/performance-metrics`, config);
       return response.data; 
     } catch (error) {
       console.error("Error fetching executive performance metrics:", error);
@@ -35,7 +36,7 @@ const ExecutiveAnalytics = () => {
 
   // Fetch executive's overdue follow-ups
   const fetchMyOverdueFollowups = async () => {
-    const response = await axios.get('http://localhost:3000/executive/followup-reminders', {
+    const response = await axios.get(`${API_BASE_URL}/executive/followup-reminders`, {
       withCredentials: true,
     });
     return response.data;
@@ -55,6 +56,14 @@ const ExecutiveAnalytics = () => {
 
   const isLoading = metricsLoading || overdueFollowupsLoading;
   const error = metricsError;
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    const mainContent = document.querySelector('main.flex-1');
+    if (mainContent) {
+      mainContent.scrollTop = 0;
+    }
+  }, []);
 
   if (isLoading) {
     return <Loading />;
@@ -228,7 +237,7 @@ const ExecutiveAnalytics = () => {
               <tbody>
                 {overdueFollowupsData.pending.map((followup, idx) => (
                   <tr key={followup._id || idx} className="bg-red-100">
-                    <td className="py-2 px-3 text-black">{followup.email}</td>
+                    <td className="py-2 px-3 text-black">{followup.leadEmail || followup.email}</td>
                     <td className="py-2 px-3 text-black">{new Date(followup.followUpDate).toLocaleDateString()}</td>
                     <td className="py-2 px-3 text-black">{followup.status}</td>
                   </tr>

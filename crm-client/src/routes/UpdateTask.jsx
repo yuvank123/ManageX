@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { motion } from "framer-motion";
+import { API_BASE_URL } from '../config/api.js';
 
 const UpdateTask = () => {
   const { id } = useParams();
@@ -11,7 +12,7 @@ const UpdateTask = () => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:3000/specificTask/${id}`)
+      .get(`${API_BASE_URL}/specificTask/${id}`)
       .then((res) => setTask(res.data))
       .catch((err) => {
         console.error(err);
@@ -30,7 +31,7 @@ const UpdateTask = () => {
     };
 
     try {
-      const res = await axios.put(`http://localhost:3000/api/tasks/${id}`, updatedTask);
+      const res = await axios.put(`${API_BASE_URL}/api/tasks/${id}`, updatedTask);
       if (res.data.modifiedCount > 0 || res.data.acknowledged) {
         Swal.fire("Success", "Task updated successfully!", "success");
         navigate("/dashboard/managetask"); // redirect after update

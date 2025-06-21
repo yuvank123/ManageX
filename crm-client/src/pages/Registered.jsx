@@ -7,6 +7,7 @@ import Lottie from "lottie-react";
 import animationData from "../assets/register.json";
 import { Context } from '../provider/AuthProvider';
 import SocialLogin from '../assets/shared/SocialLogin';
+import { API_BASE_URL } from '../config/api.js';
 
 
 
@@ -98,7 +99,7 @@ const Registered = () => {
               .then((result)=>{
                toast.success("Profile Updated")
               
-            axios.post("http://localhost:3000/users",usersData)
+            axios.post(`${API_BASE_URL}/users`,usersData)
             .then((res)=>{
                 if(res.data.insertedId){
                     // alert("user added")

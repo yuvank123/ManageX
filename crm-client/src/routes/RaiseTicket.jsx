@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { Context } from "../provider/AuthProvider";
+import { API_BASE_URL } from '../config/api.js';
 
 const RaiseTicket = () => {
   const { user } = useContext(Context);
@@ -32,7 +33,7 @@ const RaiseTicket = () => {
     };
 
     try {
-      await axios.post("http://localhost:3000/api/tickets", ticketData);
+      await axios.post(`${API_BASE_URL}/api/tickets`, ticketData);
       Swal.fire("Success!", "Ticket submitted to admin!", "success");
       setFormData({
         customerEmail: "",

@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
+import { API_BASE_URL } from '../config/api.js';
 
 let image_hosting_key = import.meta.env.VITE_image_Hosting_key;
 let image_hosting_API = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
@@ -25,7 +26,7 @@ const UpdateEmployee = () => {
   useEffect(() => {
     const fetchEmployee = async () => {
       try {
-        const res = await axios.get(`http://localhost:3000/employees/${id}`);
+        const res = await axios.get(`${API_BASE_URL}/employees/${id}`);
         setFormData(res.data);
       } catch (error) {
         console.error('Error fetching employee data:', error);
@@ -63,7 +64,7 @@ const UpdateEmployee = () => {
         }
       }
 
-      await axios.patch(`http://localhost:3000/updateemployee/${id}`, updatedData);
+      await axios.patch(`${API_BASE_URL}/updateemployee/${id}`, updatedData);
       toast.success('Employee updated successfully!');
       nav("/dashboard/managenewemployee")
     } catch (error) {

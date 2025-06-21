@@ -1,11 +1,11 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Fade } from "react-awesome-reveal";
 import { Tooltip } from "react-tooltip";
 import 'react-tooltip/dist/react-tooltip.css';
 import sun from "../assets/sun.svg"
 import moon from "../assets/moon.svg"
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { Context } from "../provider/AuthProvider";
 import Toogle from "./Toogle";
 import useAdmin from "../hook/useAdmin";
@@ -14,9 +14,23 @@ import useEmployee from "../hook/useEmployee";
 const AnimatedNavbar = ({ user, handleLogout }) => {
 
   // bg-gradient-to-r from-[#1A202C] to-[#2D3748]
+  const location = useLocation();
 
   let [isAdmin,adminLoading]= useAdmin()
   let [isemployee,employeeLoading]=useEmployee()
+
+  // Scroll to top when route changes
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
+  // Enhanced navigation handler
+  const handleNavigationClick = () => {
+    // Small delay to ensure navigation completes before scrolling
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 100);
+  };
   
   return (
     <motion.div 
@@ -54,15 +68,11 @@ const AnimatedNavbar = ({ user, handleLogout }) => {
             className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow-lg bg-[#2D3748] rounded-box w-52"
           >
             <Fade cascade damping={0.1}>
-              <li><Link to="/" className="hover:text-blue-300">Home</Link></li>
-              <li><Link to="/contactus" className="hover:text-blue-300">Contact Us</Link></li>
-              <li><Link to="/aboutus" className="hover:text-blue-300">About Us</Link></li>
-              <li><Link to="/reviews" className="hover:text-blue-300">All Reviews</Link></li>
               {
-                isAdmin && <li><Link to="/dashboard/A" className="hover:text-blue-300">Dashboard</Link></li>
+                isAdmin && <li><Link to="/dashboard/A" onClick={handleNavigationClick} className="hover:text-blue-300">Dashboard</Link></li>
               }
               {
-                isemployee && <li><Link to="/dashboard/E" className="hover:text-blue-300">Dashboard</Link></li>
+                isemployee && <li><Link to="/dashboard/E" onClick={handleNavigationClick} className="hover:text-blue-300">Dashboard</Link></li>
               }
               
               
@@ -71,7 +81,7 @@ const AnimatedNavbar = ({ user, handleLogout }) => {
         </div>
 
         {/* Logo */}
-        <Link to="/" className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 text-transparent bg-clip-text">
+        <Link to="/login" className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 text-transparent bg-clip-text">
           ManageX
         </Link>
       </div>
@@ -80,15 +90,11 @@ const AnimatedNavbar = ({ user, handleLogout }) => {
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1 space-x-6 text-lg">
           <Fade cascade damping={0.1} direction="down">
-            <li><Link to="/" className="hover:text-blue-300 transition">Home</Link></li>
-            <li><Link to="/contactus" className="hover:text-blue-300 transition">Contact Us</Link></li>
-            <li><Link to="/aboutus" className="hover:text-blue-300 transition">About Us</Link></li>
-            <li><Link to="/reviews" className="hover:text-blue-300 transition">All Reviews</Link></li>
              {
-                isAdmin && <li><Link to="/dashboard/A" className="hover:text-blue-300">Dashboard</Link></li>
+                isAdmin && <li><Link to="/dashboard/A" onClick={handleNavigationClick} className="hover:text-blue-300">Dashboard</Link></li>
               }
               {
-                isemployee && <li><Link to="/dashboard/E" className="hover:text-blue-300">Dashboard</Link></li>
+                isemployee && <li><Link to="/dashboard/E" onClick={handleNavigationClick} className="hover:text-blue-300">Dashboard</Link></li>
               }
             
           </Fade>

@@ -1,29 +1,41 @@
-import { useQuery } from '@tanstack/react-query';
+import React, { useState, useEffect } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import React from 'react'
-import Loading from '../component/loading';
+import { motion } from 'framer-motion';
+import Loading from '../component/loading.jsx';
+import { API_BASE_URL } from '../config/api.js';
 import Swal from 'sweetalert2';
-import { motion } from "framer-motion";
 import { Link } from 'react-router-dom';
-
-
-
 
 const ManageTask = () => {
 
-  const fetchUsers = async () => {
-        const response = await axios.get(`http://localhost:3000/api/tasks`);
-        return response.data;
-      };
+  const fetchTasks = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/api/tasks`);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+      throw new Error(error.response?.data?.message || "Failed to fetch tasks");
+    }
+  };
 
-      
-    const { data: task = [], isLoading:taskLoading,refetch } = useQuery({
-        queryKey: ["task"], // The unique key for this query
-        queryFn: fetchUsers, // Function to fetch the data
-      });
+  const { data: task = [], isLoading:taskLoading,refetch } = useQuery({
+    queryKey: ["task"], // The unique key for this query
+    queryFn: fetchTasks, // Function to fetch the data
+  });
 
+  const queryClient = useQueryClient();
 
-      const handleDelete = async (id) => {
+  const deleteTaskMutation = useMutation({
+    mutationFn: async (id) => {
+      await axios.delete(`${API_BASE_URL}/api/tasks/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['tasks']);
+    },
+  });
+
+  const handleDelete = async (id) => {
     const confirm = await Swal.fire({
       title: "Are you sure?",
       text: "This task will be permanently deleted!",
@@ -34,7 +46,7 @@ const ManageTask = () => {
 
     if (confirm.isConfirmed) {
       try {
-        await axios.delete(`http://localhost:3000/api/tasks/${id}`);
+        await deleteTaskMutation.mutateAsync(id);
         refetch()
       
         Swal.fire("Deleted!", "Task has been deleted.", "success");
@@ -45,14 +57,6 @@ const ManageTask = () => {
     }
   };
 
- 
-
- 
-     
-
-
-
-    
   return (
   <div>
   <motion.div
