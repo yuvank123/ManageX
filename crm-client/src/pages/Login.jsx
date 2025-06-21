@@ -251,10 +251,9 @@ const Login = () => {
       <div className="hidden lg:flex lg:w-[50%] items-center justify-center bg-gradient-to-r from-blue-00 via-blue-800 to-blue-700 p-10 text-white relative overflow-hidden">
         <div className="max-w-md w-full text-center space-y-8 z-10">
           {/* Headline */}
-          <h2 className="leading-11 text-[45px] font-extrabold unbounded hover:text-white transition duration-300 text-blue-50">
-            Welcome back! <br />
+          <h2 className="leading-11 text-[60px] font-extrabold unbounded hover:text-white transition duration-300 text-blue-50">
             <span className="underline-offset-4 decoration-white decoration-2 hover:decoration-dashed">
-              Sign in to your <span className='underline underline-offset-2'>ManageX</span>
+            ManageX
             </span>
           </h2>
 

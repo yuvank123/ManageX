@@ -1,8 +1,8 @@
 import React, { useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Context } from '../provider/AuthProvider';
-import useAdmin from '../hooks/useAdmin';
-import useEmployee from '../hooks/useEmployee';
+import useAdmin from '../hook/useAdmin';
+import useEmployee from '../hook/useEmployee';
 import Loading from '../component/loading';
 
 const DashboardDefault = () => {

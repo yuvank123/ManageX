@@ -3,7 +3,7 @@ import axios from 'axios';
 import React, { useContext, useEffect, useState } from 'react'
 import Swal from 'sweetalert2';
 import { Context } from '../provider/AuthProvider';
-import useAxios from '../hooks/useAxios';
+import useAxios from '../hook/useAxios';
 import { useNavigate } from 'react-router-dom';
 
 const CheckoutForm = ({salary,email}) => {

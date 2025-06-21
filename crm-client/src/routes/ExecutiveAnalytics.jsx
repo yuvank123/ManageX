@@ -4,7 +4,7 @@ import axios from 'axios';
 import { motion } from 'framer-motion';
 import { Context } from '../provider/AuthProvider';
 import Loading from '../component/loading.jsx';
-import API_BASE_URL from '../config/api';
+import API_BASE_URL from '../config/api.js';
 import {
   FaChartLine,
   FaUsers,

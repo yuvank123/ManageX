@@ -227,16 +227,16 @@ app.get("/health", async (req, res) => {
 });
 
 app.get("/test", (req, res) => {
-  res.json({ 
+  res.json({
     message: "Server is working!",
-    timestamp: new Date().toISOString() 
+    timestamp: new Date().toISOString()
   });
 });
 
 app.get("/api/test", (req, res) => {
-  res.json({ 
+  res.json({
     message: "API is working!",
-    timestamp: new Date().toISOString() 
+    timestamp: new Date().toISOString()
   });
 });
 
@@ -247,10 +247,10 @@ app.post("/jwt", async (req, res) => {
       expiresIn: "1h",
     });
     res.cookie("token", token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
-      })
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+    })
       .send({ success: true });
     logActivity(userData.email, 'User Login', { ipAddress: req.ip });
   } catch (error) {
@@ -261,10 +261,10 @@ app.post("/jwt", async (req, res) => {
 
 app.post("/logout", (req, res) => {
   res.clearCookie("token", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
-    })
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+  })
     .send({ success: true });
 });
 
@@ -279,8 +279,8 @@ app.post("/api/users/google", async (req, res) => {
     if (existingUser) {
       await userCollection.updateOne(
         { email },
-        { 
-          $set: { 
+        {
+          $set: {
             name: name || existingUser.name,
             user_photo: photoURL || existingUser.user_photo,
             uid: uid,
@@ -295,7 +295,7 @@ app.post("/api/users/google", async (req, res) => {
         name: name || email,
         user_photo: photoURL || null,
         uid: uid,
-        role: 'executives', 
+        role: 'executives',
         createdAt: new Date(),
         lastLogin: new Date()
       };
@@ -420,6 +420,19 @@ app.get("/api/tasks", async (req, res) => {
     res.status(500).send({ error: "Internal server error" });
   }
 });
+
+app.post("/api/tasks", async (req, res) => {
+  try {
+    if (!taskCollection) await connectDB();
+    const newTask = req.body;
+    const result = await taskCollection.insertOne(newTask);
+    res.send({ success: true, insertedId: result.insertedId });
+  } catch (error) {
+    console.error("Error creating task:", error);
+    res.status(500).send({ error: "Internal server error" });
+  }
+});
+
 
 app.get("/manageLead", async (req, res) => {
   try {
@@ -575,8 +588,8 @@ app.get("/manageFollowup", async (req, res) => {
   }
 });
 
-app.post("/api/followups", async (req, res)=>{
- try {
+app.post("/api/followups", async (req, res) => {
+  try {
     if (!followUpCollection) await connectDB(); // connect if not already
 
     const followUpData = req.body;
@@ -775,7 +788,7 @@ app.get("/admin/leads", varifyToken, verifyAdmin, async (req, res) => {
   try {
     if (!leadCollection) await connectDB();
     const { executiveEmail, product, status, minExpectedClosureDate, maxExpectedClosureDate } = req.query;
-    
+
     let filter = {};
     if (executiveEmail) filter.myEmail = executiveEmail;
     if (product) filter.product = product;
@@ -785,7 +798,7 @@ app.get("/admin/leads", varifyToken, verifyAdmin, async (req, res) => {
       if (minExpectedClosureDate) filter.expectedDate.$gte = minExpectedClosureDate;
       if (maxExpectedClosureDate) filter.expectedDate.$lte = maxExpectedClosureDate;
     }
-    
+
     const result = await leadCollection.find(filter).toArray();
     res.send(result.map(mapLead));
   } catch (error) {
@@ -855,7 +868,7 @@ app.get("/admin/lead-analytics", varifyToken, verifyAdmin, async (req, res) => {
         startDate = new Date(endDate.setFullYear(endDate.getFullYear() - 1));
         break;
       default:
-        startDate = new Date(0); 
+        startDate = new Date(0);
     }
     const leads = await leadCollection.find({
       createdAt: { $gte: startDate }
@@ -893,7 +906,7 @@ app.get("/admin/dashboard-summary", varifyToken, verifyAdmin, async (req, res) =
     });
     const overdueLeads = await leadCollection.countDocuments({
       expectedDate: { $lt: today.toISOString().split('T')[0] },
-      status: { $nin: ['Closed'] } 
+      status: { $nin: ['Closed'] }
     });
     const recentActivities = {
       leads: await leadCollection.find({}).sort({ createdAt: -1 }).limit(5).toArray(),
@@ -1054,10 +1067,10 @@ app.get("/admin/overdue-leads", varifyToken, verifyAdmin, async (req, res) => {
       status: { $nin: ['Closed', 'Converted'] }
     }).toArray();
     const stagnantThreshold = new Date();
-    stagnantThreshold.setDate(stagnantThreshold.getDate() - 30); 
+    stagnantThreshold.setDate(stagnantThreshold.getDate() - 30);
     const stagnant = await leadCollection.find({
       updatedAt: { $lt: stagnantThreshold },
-      status: { $nin: ['Closed', 'Converted'] } 
+      status: { $nin: ['Closed', 'Converted'] }
     }).toArray();
     res.send({ overdue, stagnant });
   } catch (error) {
@@ -1104,7 +1117,7 @@ app.get("/admin/ticket-tat", varifyToken, verifyAdmin, async (req, res) => {
       }
     });
     const averageTATMs = count > 0 ? totalTAT / count : 0;
-    const averageTATDays = averageTATMs / (1000 * 60 * 60 * 24); 
+    const averageTATDays = averageTATMs / (1000 * 60 * 60 * 24);
     res.send({ averageTATDays: averageTATDays.toFixed(2) });
   } catch (error) {
     console.error("Error calculating average TAT:", error);
@@ -1130,7 +1143,7 @@ app.get("/admin/high-priority-tickets", varifyToken, verifyAdmin, async (req, re
 app.get("/executive/performance-metrics", varifyToken, verifyExecutive, async (req, res) => {
   try {
     if (!userCollection) await connectDB();
-    
+
     // Get employee count from both collections
     const employeeUsers = await userCollection.countDocuments({ role: "employee" });
     const employeesCount = await client.db("CRMDB").collection("employees").countDocuments();
@@ -1139,7 +1152,7 @@ app.get("/executive/performance-metrics", varifyToken, verifyExecutive, async (r
     // Get task metrics
     const totalTasks = await taskCollection.countDocuments({ assignedTo: req.user.email });
     const completedTasks = await taskCollection.countDocuments({ assignedTo: req.user.email, status: 'complete' });
-    
+
     // Get lead metrics
     const totalLeads = await leadCollection.countDocuments({ assignedTo: req.user.email });
     const closedLeads = await leadCollection.countDocuments({ assignedTo: req.user.email, status: 'Closed' });
@@ -1159,7 +1172,7 @@ app.get("/executive/performance-metrics", varifyToken, verifyExecutive, async (r
         conversionRate: totalLeads > 0 ? ((closedLeads / totalLeads) * 100).toFixed(2) : 0
       }
     };
-    
+
     res.send(metrics);
   } catch (error) {
     console.error("Error fetching executive metrics:", error);
@@ -1176,11 +1189,11 @@ app.post("/api/notifications", varifyToken, async (req, res) => {
     const notification = {
       recipientEmail,
       senderEmail,
-      type, 
+      type,
       title,
       message,
       relatedId,
-      priority: priority || 'normal', 
+      priority: priority || 'normal',
       status: 'unread',
       createdAt: new Date(),
       readAt: null

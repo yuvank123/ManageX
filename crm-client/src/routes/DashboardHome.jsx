@@ -14,13 +14,13 @@ import {
   LineElement,
   Filler,
 } from 'chart.js';
-import useAdminCount from '../hooks/useAdminCount.jsx';
-import useUser from '../hooks/useUser.jsx';
-import useTask from '../hooks/useTask.jsx';
-import useEmployeeCount from '../hooks/useEmployeeCount.jsx';
+import useAdminCount from '../hook/useAdminCount.jsx';
+import useUser from '../hook/useUser.jsx';
+import useTask from '../hook/useTask.jsx';
+import useEmployeeCount from '../hook/useEmployeeCount.jsx';
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
-import useLead from '../hooks/useLead.jsx';
+import useLead from '../hook/useLead.jsx';
 import { FaUsers, FaShieldAlt, FaBriefcase, FaTasks, FaChartLine, FaArrowUp, FaCalendarAlt, FaClock } from 'react-icons/fa';
 import API_BASE_URL from '../config/api';
 

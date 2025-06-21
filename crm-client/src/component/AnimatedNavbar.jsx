@@ -8,8 +8,8 @@ import moon from "../assets/moon.svg"
 import { useContext, useEffect } from "react";
 import { Context } from "../provider/AuthProvider";
 import Toogle from "./Toogle";
-import useAdmin from "../hooks/useAdmin";
-import useEmployee from "../hooks/useEmployee";
+import useAdmin from "../hook/useAdmin";
+import useEmployee from "../hook/useEmployee";
 
 const AnimatedNavbar = ({ user, handleLogout }) => {
 

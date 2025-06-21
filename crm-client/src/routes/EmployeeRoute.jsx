@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 
 import { Navigate, useLocation } from 'react-router-dom';
 import { Context } from '../provider/AuthProvider';
-import useEmployee from '../hooks/useEmployee';
+import useEmployee from '../hook/useEmployee';
 
 
 const EmployeeRoute = ({children}) => {
